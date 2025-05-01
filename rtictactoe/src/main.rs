@@ -28,7 +28,7 @@ fn main() {
         let c = b.unwrap();
         clearscrn();
         print!("ctrl c to quit\r\n");
-        print!("Binary: {0:08b} ASCII: {0:#03}\r\n", c);
+        print!("Binary: {0:08b} ASCII: {0:#03} Character: {1:#?}\r\n", c, c as char);
         //print!("\x1B[5A"); // Move cursor up 5 lines
 
         //print!("\x1B[3C"); // Move cursor right 3 columns
@@ -36,7 +36,7 @@ fn main() {
 
         io::stdout().flush().expect("Failed to flush");
 
-        if c == 3 {
+        if c == 3 { // this is the code for "ctrl + c"
 			disable_raw_mode().unwrap();
             break;
         }
