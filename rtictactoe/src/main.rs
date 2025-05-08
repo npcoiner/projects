@@ -6,8 +6,11 @@ fn main() {
     let mut xo: u16 = 0b000_000_000; //1 means X, 0 means empty or O, verify with gameState
     let mut gameState: u16 = 0b000_000_000;// 1 means space is occupied
     let mut position: (u16,u16) = (0, 0); // Stores cursor position. (x,y) coordinate
-
+    
     let stdin = std::io::stdin(); // capture stdin once
+    printGameFromState(xo, gameState, position);
+    std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
+
     for b in std::io::Read::bytes(&mut stdin.lock()) {
         clearscrn();
 
@@ -48,8 +51,9 @@ fn printGameFromState(xo: u16, gameState :u16, position: (u16,u16)){
         counter+= 1;
         mask = mask >> 1;
     }
-    print!("\r\n");
-    print!("game: {:b}",gameState);    
+    moveCursorUp(3);
+    moveCursorRight(position.0);
+    moveCursorDown(position.1);
 }
 
 fn init() {
@@ -64,20 +68,28 @@ fn clearscrn() {
     print!("\x1B[2J\x1B[3J\x1B[H");
 }
 
-fn moveCursorUp(distance: i32) {
-    print!("\x1B[{}A", distance);
+fn moveCursorUp(distance: u16) {
+    if distance > 0 {
+        print!("\x1B[{}A", distance);
+    }
 }
 
-fn moveCursorDown(distance: i32) {
-    print!("\x1B[{}B", distance);
+fn moveCursorDown(distance: u16) {
+    if distance > 0 {
+        print!("\x1B[{}B", distance);
+    }
 }
 
-fn moveCursorRight(distance: i32) {
-    print!("\x1B[{}C", distance);
+fn moveCursorRight(distance: u16) {
+    if distance > 0 {
+        print!("\x1B[{}C", distance);
+    }
 }
 
-fn moveCursorLeft(distance: i32) {
+fn moveCursorLeft(distance: u16) {
+    if distance > 0 {       
     print!("\x1B[{}D", distance);
+    }
 }
 
 fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
