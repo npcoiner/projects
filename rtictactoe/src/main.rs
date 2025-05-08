@@ -16,7 +16,7 @@ fn main() {
             break;
         }
         print!("Position:{0},{1}\r\n",position.0,position.1);
-        printGameFromState(gameState, position);
+        printGameFromState(xo, gameState, position);
 
         if checkWin(gameState, xo).1 == true{
             clearscrn();
@@ -27,7 +27,28 @@ fn main() {
     }
 }
 
-fn printGameFromState(gameState :u16, position: (u16,u16)){
+fn printGameFromState(xo: u16, gameState :u16, position: (u16,u16)){
+    let mut mask : u16 = 0b0000_0001_0000_0000;
+    let mut counter: u8 = 1;
+    while mask > 0{
+        if (mask & gameState > 0){
+            print!("x");
+        }
+        else{
+            if xo & mask > 0{
+                print!("o");
+            }
+            else{
+                print!("-");
+            }
+        }
+        if counter % 3 == 0{
+            print!("\r\n");
+        }
+        counter+= 1;
+        mask = mask >> 1;
+    }
+    print!("\r\n");
     print!("game: {:b}",gameState);    
 }
 
@@ -93,7 +114,7 @@ fn handleInput(inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut
             return true;
         }
     if c == 119{ 
-        position.1 += 1;
+        position.1 += 2;
         position.1 %= 3;
     }
     if c == 97{ 
@@ -102,7 +123,7 @@ fn handleInput(inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut
     }
 
    if c == 115{ 
-        position.1 += 2;
+        position.1 += 1;
         position.1 %= 3;
     }
 
