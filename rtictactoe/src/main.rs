@@ -6,24 +6,37 @@ fn main() {
     let mut xo: u16 = 0b000_000_000; //1 means X, 0 means empty or O, verify with gameState
     let mut gameState: u16 = 0b000_000_000;// 1 means space is occupied
     let mut position: (u16,u16) = (0, 0); // Stores cursor position. (x,y) coordinate
-    
+    let mut gameStart = true;
     let stdin = std::io::stdin(); // capture stdin once
-    printGameFromState(xo, gameState, position);
     std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
 
-    for b in std::io::Read::bytes(&mut stdin.lock()) {
+    for b in std::io::Read::bytes(&mut stdin.lock()){
         clearscrn();
-
-        print!("ctrl c to quit\r\n");
+        if gameStart{
+            print!("Welcome to tic-tac-toe\r\n");
+            gameStart = false; 
+            printGameFromState(xo, gameState, position);
+            std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
+            continue;
+        }
+        //print!("ctrl c to quit\r\n");
         if handleInput(b.expect("std in byte error"),&mut position,  &mut gameState,  &mut xo){
             break;
         }
-        print!("Position:{0},{1}\r\n",position.0,position.1);
+        //print!("Position:{0},{1}\r\n",position.0,position.1);
         printGameFromState(xo, gameState, position);
 
         if checkWin(gameState, xo).1 == true{
             clearscrn();
             print!("WIN!\r\n");
+            print!("Press anything to start over \r\n");                       
+            std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
+         
+            gameState = 0b000_000_000;
+            xo = 0b000_000_000;
+            gameStart = true;
+            continue;        
+            
         }
 
         std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
@@ -101,7 +114,7 @@ fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
         0b010_010_010,
         0b001_001_001,
         0b100_010_001,
-        0b001_010_001,
+        0b001_010_100,
     ];
 
     for &mask in WIN_MASKS.iter(){
