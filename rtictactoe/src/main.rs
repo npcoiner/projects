@@ -8,6 +8,7 @@ fn main() {
     let mut position: (u16,u16) = (0, 0); // Stores cursor position. (x,y) coordinate
     let mut gameStart = true;
     let stdin = std::io::stdin(); // capture stdin once
+    let mut xTurn : bool = true;
     std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
 
     for b in std::io::Read::bytes(&mut stdin.lock()){
@@ -20,13 +21,13 @@ fn main() {
             continue;
         }
         //print!("ctrl c to quit\r\n");
-        if handleInput(b.expect("std in byte error"),&mut position,  &mut gameState,  &mut xo){
+        if handleInput(&mut xTurn, b.expect("std in byte error"),&mut position,  &mut gameState,  &mut xo){
             break;
         }
         //print!("Position:{0},{1}\r\n",position.0,position.1);
         printGameFromState(xo, gameState, position);
 
-        if checkWin(gameState, xo).1 == true{
+        if checkWin(gameState, xo).0 == true{
             clearscrn();
             print!("WIN!\r\n");
             print!("Press anything to start over \r\n");                       
@@ -35,6 +36,7 @@ fn main() {
             gameState = 0b000_000_000;
             xo = 0b000_000_000;
             gameStart = true;
+            xTurn = true;
             continue;        
             
         }
@@ -121,14 +123,14 @@ fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
         if (gameState & mask) & xo == mask {
             return (true, true);
         }
-        if (gameState & mask) & !xo == mask {
+        if (!gameState & mask) & xo == mask {
             return (true, false);
         }
     }
     (false, false)
 }
 
-fn handleInput(inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut u16) -> bool{
+fn handleInput(xTurn: &mut bool, inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut u16) -> bool{
  
     let c = inByte;
    
@@ -157,14 +159,14 @@ fn handleInput(inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut
         position.0 %= 3;
     }
     if c == 32{
-        selectSquare(position.0,position.1, gameState, xo);
+        selectSquare(xTurn, position.0,position.1, gameState, xo);
     }
 
     print!("handleInputLog: Binary: {0:08b} ASCII: {0:#03} Character: {1:#?}\r\n", c, c as char);
        false
 }
 
-fn selectSquare(x: u16, y: u16, gameState: &mut u16, xo: &mut u16){
+fn selectSquare(xTurn: &mut bool,x: u16, y: u16, gameState: &mut u16, xo: &mut u16){
     let selected = x + 3 * y;// index of selection given x and y
     if *xo >> (8 - selected) & 1 > 0{
         //Area has already been set
@@ -172,7 +174,9 @@ fn selectSquare(x: u16, y: u16, gameState: &mut u16, xo: &mut u16){
     }
     let mut mask: u16 = 0b0000_0001_0000_0000;
     mask = mask >> selected; //mask for selecting the bit
-    *gameState += mask;
-    *xo += mask
-    
+    if(*xTurn){
+        *gameState += mask;
+    }
+    *xo += mask;
+    *xTurn = !*xTurn;
 }
