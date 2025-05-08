@@ -1,6 +1,36 @@
 static WIDTH: i8 = 32;
 static HEIGHT: i8 = 32;
 
+fn main() {
+    init();
+    let mut xo: u16 = 0b000_000_000; //1 means X, 0 means empty or O, verify with gameState
+    let mut gameState: u16 = 0b000_000_000;// 1 means space is occupied
+    let mut position: (u16,u16) = (0, 0); // Stores cursor position. (x,y) coordinate
+
+    let stdin = std::io::stdin(); // capture stdin once
+    for b in std::io::Read::bytes(&mut stdin.lock()) {
+        clearscrn();
+
+        print!("ctrl c to quit\r\n");
+        if handleInput(b.expect("std in byte error"),&mut position,  &mut gameState,  &mut xo){
+            break;
+        }
+        print!("Position:{0},{1}\r\n",position.0,position.1);
+        printGameFromState(gameState, position);
+
+        if checkWin(gameState, xo).1 == true{
+            clearscrn();
+            print!("WIN!\r\n");
+        }
+
+        std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
+    }
+}
+
+fn printGameFromState(gameState :u16, position: (u16,u16)){
+    print!("game: {:b}",gameState);    
+}
+
 fn init() {
     crossterm::terminal::enable_raw_mode().expect("Failed to enter raw_mode");
     print!("\x1B[2J\x1B[3J\x1B[H"); // Clear the screen, clear the scroll buffer, reset cursor position.
@@ -49,28 +79,54 @@ fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
             return (true, false);
         }
     }
-    (true,true)
+    (false, false)
 }
 
-fn main() {
-    init();
-    let mut xo: u16 = 0b000_000_000; //1 means X, 0 means empty or O, verify with gameState
-    let mut gameState: u16 = 0b000_000_000;// 1 means space is occupied
-    let mut position = (0, 0); // Stores cursor position.
-
-    let stdin = std::io::stdin(); // capture stdin once
-    for b in std::io::Read::bytes(&mut stdin.lock()) {
-        let c = b.unwrap();
-        clearscrn();
-        print!("ctrl c to quit\r\n");
-        print!("Binary: {0:08b} ASCII: {0:#03} Character: {1:#?}\r\n", c, c as char);
-
-        std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
-
-        if c == 3 {
+fn handleInput(inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut u16) -> bool{
+ 
+    let c = inByte;
+   
+    if c == 3
+        {
             // Ctrl + C
             crossterm::terminal::disable_raw_mode().unwrap();
-            break;
+            return true;
         }
+    if c == 119{ 
+        position.1 += 1;
+        position.1 %= 3;
     }
+    if c == 97{ 
+        position.0 += 2;
+        position.0 %= 3;
+    }
+
+   if c == 115{ 
+        position.1 += 2;
+        position.1 %= 3;
+    }
+
+   if c == 100{ 
+        position.0 += 1;
+        position.0 %= 3;
+    }
+    if c == 32{
+        selectSquare(position.0,position.1, gameState, xo);
+    }
+
+    print!("handleInputLog: Binary: {0:08b} ASCII: {0:#03} Character: {1:#?}\r\n", c, c as char);
+       false
+}
+
+fn selectSquare(x: u16, y: u16, gameState: &mut u16, xo: &mut u16){
+    let selected = x + 3 * y;// index of selection given x and y
+    if *xo >> (8 - selected) & 1 > 0{
+        //Area has already been set
+        return;
+    }
+    let mut mask: u16 = 0b0000_0001_0000_0000;
+    mask = mask >> selected; //mask for selecting the bit
+    *gameState += mask;
+    *xo += mask
+    
 }
