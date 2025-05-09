@@ -41,7 +41,18 @@ fn main() {
             continue;        
             
         }
+        if 0b111111111 & xo == 0b111111111{
+            clearscrn();
+            print!("TIE!\r\n");
+            print!("Press anything to start over \r\n");
+            std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
 
+            gameState = 0b000_000_000;
+            xo = 0b000_000_000;
+            gameStart = true;
+            xTurn = true;
+            continue;
+        }
         std::io::Write::flush(&mut std::io::stdout()).expect("Failed to flush");
     }
 }
