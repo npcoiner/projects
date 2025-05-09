@@ -1,5 +1,6 @@
-static WIDTH: i8 = 32;
-static HEIGHT: i8 = 32;
+#![allow(non_snake_case)]
+//static WIDTH: i8 = 32;
+//static HEIGHT: i8 = 32;
 
 fn main() {
     init();
@@ -49,7 +50,7 @@ fn printGameFromState(xo: u16, gameState :u16, position: (u16,u16)){
     let mut mask : u16 = 0b0000_0001_0000_0000;
     let mut counter: u8 = 1;
     while mask > 0{
-        if (mask & gameState > 0){
+        if mask & gameState > 0{
             print!("x");
         }
         else{
@@ -101,12 +102,12 @@ fn moveCursorRight(distance: u16) {
     }
 }
 
-fn moveCursorLeft(distance: u16) {
-    if distance > 0 {       
-    print!("\x1B[{}D", distance);
-    }
-}
-
+//fn moveCursorLeft(distance: u16) {
+//    if distance > 0 {       
+//        print!("\x1B[{}D", distance);
+//    }
+//}
+//
 fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
     const WIN_MASKS: [u16; 8] = [
         0b111_000_000,
@@ -133,7 +134,6 @@ fn checkWin(gameState: u16, xo: u16) -> (bool, bool) {
 fn handleInput(xTurn: &mut bool, inByte: u8, position: &mut(u16,u16), gameState:&mut u16, xo: &mut u16) -> bool{
  
     let c = inByte;
-   
     if c == 3
         {
             // Ctrl + C
@@ -172,11 +172,13 @@ fn selectSquare(xTurn: &mut bool,x: u16, y: u16, gameState: &mut u16, xo: &mut u
         //Area has already been set
         return;
     }
-    let mut mask: u16 = 0b0000_0001_0000_0000;
-    mask = mask >> selected; //mask for selecting the bit
-    if(*xTurn){
-        *gameState += mask;
+    else{
+         let mut mask: u16 = 0b0000_0001_0000_0000;
+        mask = mask >> selected; //mask for selecting the bit
+        if*xTurn{
+            *gameState += mask;
+        }
+        *xo += mask;
+        *xTurn = !*xTurn;
     }
-    *xo += mask;
-    *xTurn = !*xTurn;
 }
