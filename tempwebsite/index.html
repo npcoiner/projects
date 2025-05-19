@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Work in Progress</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #111;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    .tape {
+      position: absolute;
+      width: 300vw;
+      height: 40px;
+      background: yellow;
+      color: black;
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 40px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      left: -100vw;
+    }
+
+    .tape .text {
+      display: inline-block;
+      animation: scrollText 20s linear infinite;
+      transform: translateX(100%);
+    }
+
+    .tape .text span {
+      padding-right: 2rem;
+    }
+
+    .tape1 {
+      top: 50%;
+      transform: rotate(-15deg);
+      transform-origin: center;
+      z-index: 2;
+    }
+
+    .tape2 {
+      top: 50%;
+      transform: rotate(15deg);
+      transform-origin: center;
+      z-index: 1;
+    }
+
+    @keyframes scrollText {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-70%); }
+    }
+  </style>
+</head>
+<body>
+  <div class="tape tape1">
+    <div class="text">
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+      <span>⚠️ Work in Progress</span>
+    </div>
+  </div>
+  <div class="tape tape2">
+    <div class="text">
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+      <span>⚠️ Coming Soon</span>
+    </div>
+  </div>
+</body>
+</html>
