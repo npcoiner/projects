@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Set path to the subdirectory containing index.html
-          path: 'projects/tempwebsite/'
+          path: '/tempwebsite/'
 
       - name: Deploy to GitHub Pages
         id: deployment
